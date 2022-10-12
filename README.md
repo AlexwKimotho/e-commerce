@@ -1,7 +1,8 @@
-E-COMMERCE WEBSITE 
+#E-COMMERCE WEBSITE 
+
+
 
 ![Screenshot from 2022-10-12 11-14-13](https://user-images.githubusercontent.com/110036440/195288774-31fbd26e-9f00-45d3-923d-cc0fd485e712.png)
-
 ALKIM FASHION APPAREL
 Author: Alex Wachira Kimotho.
 
