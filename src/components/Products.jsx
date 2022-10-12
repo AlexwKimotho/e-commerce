@@ -1,4 +1,4 @@
-// import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 // import Skeleton from "react-loading-skeleton";
 
 // const Products = () => {
@@ -100,4 +100,4 @@
 //   );
 // };
 
-// export default Products;
+export default Products;
