@@ -10,7 +10,7 @@ const Navbar = () => {
             ALKIM FASHION APPAREL
           </a>
           <button
-            className="navbar-toggler"
+            className=" navbar-toggler "
             type="button"
             data-bs-toggle="collapse"
             data-bs-target="#navbarSupportedContent"
