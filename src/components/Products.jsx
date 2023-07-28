@@ -1,93 +1,103 @@
-import React, { useState, useEffect } from "react";
-// import Skeleton from "react-loading-skeleton";
+import React, { useState, useEffect, useRef } from "react";
+import styled from "styled-components";
+import { Button } from "primereact/button";
+import { Toast } from "primereact/toast";
 
-const Products = () => {
+const ProductsContainer = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-gap: 1rem;
+  margin-top: 2rem;
+`;
+
+const Card = styled.div`
+  border: 1px solid #ccc;
+  padding: 1rem;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  }
+`;
+
+const Image = styled.img`
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+`;
+
+const Title = styled.h3`
+  font-size: 18px;
+  margin-top: 1rem;
+`;
+
+const Price = styled.p`
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: 1rem;
+`;
+
+const ProductsPage = () => {
   const [data, setData] = useState([]);
-  const [filter, setFilter] = useState(data);
-  const [loading, setLoading] = useState(false);
-  let componentMounted = true;
+  const [loading, setLoading] = useState(true);
+  const toast = useRef(null); 
+
 
   useEffect(() => {
     const getProducts = async () => {
-      setLoading(true);
       const response = await fetch("https://fakestoreapi.com/products");
-      if (componentMounted) {
-        setData(await response.clone().json());
-        setFilter(await response.json());
-        setLoading(false);
-        console.log(filter);
-      }
-      return () => {
-        componentMounted = false;
-      };
+      const products = await response.json();
+      setData(products);
+      setLoading(false);
     };
 
     getProducts();
   }, []);
 
+  const addToCart = (product) => {
+    // Implement your logic to add the product to the cart
+    // For now, just show a toast message
+    toast.current.show({
+      severity: "success",
+      summary: "Item Added to Cart",
+      detail: product.title,
+      life: 3000,
+    });
+  };
+
   const Loading = () => {
-
-    return(
-     <>
-      Loading....
-    </>
-    
-    );
+    return <p>Loading...</p>;
   };
-  
-  const filterProduct = (cat) => {
-    const updatedList = data.filter((x)=>x.category === cat);
-    setFilter(updatedList)
-  }
 
-  const ShowProducts = () => {
+  const Products = () => {
     return (
-      <>
-        <div className="buttons d-flex justify-content-center mb-5 pb-5">
-          <button className="btn btn-outline-dark me-2"  onClick={()=>setFilter(data)}>ALL</button>
-          <button className="btn btn-outline-dark me-2" onClick={()=>filterProduct("men's clothing")} > Men's closet</button>
-          <button className="btn btn-outline-dark me-2" onClick={()=>filterProduct("women's clothing")}>Women's closet</button>
-          <button className="btn btn-outline-dark me-2" onClick={()=>filterProduct("jewelery")}>Jewelery</button>
-          <button className="btn btn-outline-dark me-2" onClick={()=>filterProduct("electronics")}>Electronics</button>
-        </div>
-        {filter.map((product) => {
-          return (
-            <>
-              <div className="col-md-3 mb-4">
-                <div class="card h-100 text-center p-4" key= {product.id}>
-                  <img src={product.image} class="card-img-top" alt={product.title} height="250px" />
-                  <div class="card-body">
-                    <h5 class="card-title mb-0">{product.title.substring(0,12)}...</h5>
-                    <p class="card-text lead fw-bold">
-                      ${product.price}
-                    </p>
-                    <a href="#" class="btn btn-outline-dark">
-                      Buy Now
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </>
-          );
-        })}
-      </>
+      <ProductsContainer>
+        {data.map((product) => (
+          <Card key={product.id}>
+            <Image src={product.image} alt={product.title} />
+            <Title>{product.title}</Title>
+            <Price>${product.price}</Price>
+            <Button
+              label="Add to Cart"
+              className="p-button-outlined"
+              onClick={() => addToCart(product)}
+            />
+          </Card>
+        ))}
+      </ProductsContainer>
     );
   };
+
   return (
     <div>
-      <div className="container my-5 py-5">
-        <div className="row">
-          <div className="col-12 mb-5 color: ">
-            <h1 className="display-6 fw-bolder text-center">Latest Products</h1>
-            <hr />
-          </div>
-          <div className="row justify-content-center">
-            {loading ? <Loading /> : <ShowProducts />}
-          </div>
-        </div>
-      </div>
+      <h1>Latest Products</h1>
+      <hr />
+      {loading ? <Loading /> : <Products />}
+      <Toast ref={toast} />
     </div>
   );
 };
 
-export default Products;
+export default ProductsPage;
